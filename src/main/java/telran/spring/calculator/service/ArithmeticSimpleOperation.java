@@ -1,47 +1,37 @@
 package telran.spring.calculator.service;
 
-import org.springframework.stereotype.Service;
-import java.lang.reflect.Method;
+import org.springframework.stereotype.*;
+import java.util.*;
+import java.util.function.BiFunction;
 
 import telran.spring.calculator.dto.ArithmeticOperationData;
 import telran.spring.calculator.dto.OperationData;
-@Service("arithmetic")
-public class ArithmeticSimpleOperation implements Operation{
+@Service
+@Component("arithmetic")
+public class ArithmeticSimpleOperation implements Operation {
+private static Map<String, BiFunction<Double, Double, String>> operations;
+static {
+	operations = new HashMap<>();
+	operations.put("*", (o1, o2) -> o1 * o2 + "");
+	operations.put("-", (o1, o2) -> o1 - o2 + "");
+	operations.put("+", (o1, o2) -> o1 + o2 + "");
+	operations.put("/", (o1, o2) -> o1 / o2 + "");
+	
+}
 	@Override
 	public String execute(OperationData data) {
-		ArithmeticOperationData arithmeticData = (ArithmeticOperationData) data;
-		Method method = null;
-		String res;
-			try {
-				method = this.getClass().getDeclaredMethod(arithmeticData.additionalData,
-						double.class, double.class);
-				res = (String) method.invoke(this, new Object[] {arithmeticData.operand1, arithmeticData.operand2});
-			} catch (Exception e) {
-				res = "Wrong operation";
-			}
-			return res.toString();
-	}
-	
-	String divide(double op1, double op2) {
-		if((int)op2 == 0) {
-			return "Dividing by zero";
+		String res = "";
+		ArithmeticOperationData arithmeticData;
+		try {
+			arithmeticData = (ArithmeticOperationData) data;
+			var function = operations.getOrDefault(data.additionalData,
+					(o1, o2) -> "Wrong arithmetic operation should be (*,/,+,-)");
+			res = function.apply(arithmeticData.operand1, arithmeticData.operand2);
+		} catch (Exception e) {
+			res = "Operation data mismatch operation type";
 		}
-		return String.format("%s divade %s = %s\n", op1, op2, (op1 / op2));
-	}
-
-	String multiply(double op1, double op2) {
 		
-		return String.format("%s multiply %s = %s\n", op1, op2, (op1 * op2));
-	}
-
-	String subtract(double op1, double op2) {
-		
-		return String.format("%s substract %s = %s\n", op1, op2, (op1 - op2));
-	}
-
-	String add(double op1, double op2) {
-		
-		return String.format("%s add %s = %s\n", op1, op2, (op1 + op2));
+		return res;
 	}
 	
 }

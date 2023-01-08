@@ -11,6 +11,4 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 public class OperationData {
 	public String operationName;
 	public String additionalData;
-	//String additionalData – contains any additional data that
-	//may be null if no additionalData is required
 }
