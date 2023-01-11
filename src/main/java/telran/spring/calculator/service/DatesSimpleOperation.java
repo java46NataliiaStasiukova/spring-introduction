@@ -3,7 +3,6 @@ import java.time.LocalDate;
 import org.springframework.stereotype.*;
 import telran.spring.calculator.dto.*;
 @Service
-@Component("dates")
 public class DatesSimpleOperation implements Operation {
 
 	@Override
@@ -18,10 +17,18 @@ public class DatesSimpleOperation implements Operation {
 				days = -days;
 			}
 			res = date.plusDays(days).toString();
-		} catch (Exception e) {
-			res = "Operation data mismatch operation type";
+			LOG.debug("result message: {}", res);
+		} catch (ClassCastException e) {
+			res = wrongDtoMessage;
+			LOG.error("error: {}", res);
 		} 
 		return res;
+	}
+
+	@Override
+	public String getName() {
+		
+		return "dates";
 	}
 
 }

@@ -7,7 +7,6 @@ import java.util.function.BiFunction;
 import telran.spring.calculator.dto.ArithmeticOperationData;
 import telran.spring.calculator.dto.OperationData;
 @Service
-@Component("arithmetic")
 public class ArithmeticSimpleOperation implements Operation {
 private static Map<String, BiFunction<Double, Double, String>> operations;
 static {
@@ -27,11 +26,18 @@ static {
 			var function = operations.getOrDefault(data.additionalData,
 					(o1, o2) -> "Wrong arithmetic operation should be (*,/,+,-)");
 			res = function.apply(arithmeticData.operand1, arithmeticData.operand2);
-		} catch (Exception e) {
-			res = "Operation data mismatch operation type";
+			LOG.debug("result message: {}", res);
+		} catch (ClassCastException e) {
+			res = wrongDtoMessage;
+			LOG.error("error: {}", res);
 		}
 		
 		return res;
+	}
+	@Override
+	public String getName() {
+		
+		return "arithmetic";
 	}
 	
 }
