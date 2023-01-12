@@ -32,9 +32,13 @@ public CalculatorController(List<Operation> operationList, Map<String, Operation
 }
 @PostMapping
 String executeOperation(@RequestBody @Valid OperationData operationData) {
-	LOG.debug("received request for operation name: {}, with additional operation data: {}",
-			operationData.operationName, operationData.additionalData);
+	LOG.debug("received request for operation name: {}, with additional operation data: {},"
+			+ " class of Operation data is {}",
+			operationData.operationName, operationData.additionalData, operationData.getClass().getSimpleName());
 	Operation operation = operations.get(operationData.operationName);
+	if(operation == null) {
+		LOG.error("operation {} is not implemented", operationData.operationName);
+	}
 	return operation != null ? operation.execute(operationData) :
 		wrongTypeOperation + operationData.operationName;
 }
@@ -45,8 +49,8 @@ Set<String> getTypes(){
 }
 @PostConstruct
 void displayTypes() {
-//    operations = operationList.stream()
-//            .collect(Collectors.toMap(Operation::getName, service -> service));
+    operations = operationList.stream()
+            .collect(Collectors.toMap(Operation::getName, service -> service));
     LOG.info("application context is created with types {}", operations.keySet());
 }
 @PreDestroy

@@ -1,12 +1,15 @@
 package telran.spring;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.*;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.*;
 
@@ -15,7 +18,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import telran.spring.calculator.controller.*;
 import telran.spring.calculator.dto.*;
 
-@WebMvcTest(CalculatorController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class CalculatorControllerTest {
 	@Autowired
 	MockMvc mockMvc;
@@ -46,19 +50,19 @@ class CalculatorControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(messageJSON)).andExpect(status().isBadRequest());
 	}
-//	
-//	@Test
-//	void getMappingControllerTest() throws Exception {
-//		this.mockMvc.perform(get("http://localhost:8080/operationData"))
-//		.andExpect(status().isOk());
-//		//.andExpect(content().string(containsString("arithmetic")));
-//		
-//	}
-//	
-//	@Test
-//	void getMappingFailedTest() throws Exception {
-//	    mockMvc.perform(get("http://localhost:8080/wrongData"))
-//	        .andExpect(status().isNotFound());
-//	}
+	
+	@Test
+	void getMappingControllerTest() throws Exception {
+		this.mockMvc.perform(get("http://localhost:8080/operationData"))
+		.andExpect(status().isOk())
+		.andExpect(content().string(containsString("arithmetic")));
+		
+	}
+	
+	@Test
+	void getMappingFailedTest() throws Exception {
+	    mockMvc.perform(get("http://localhost:8080/wrongData"))
+	        .andExpect(status().isNotFound());
+	}
 
 }
