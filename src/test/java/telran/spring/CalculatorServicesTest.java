@@ -11,6 +11,7 @@ import telran.spring.calculator.service.*;
 
 @SpringBootTest
 class CalculatorServicesTest {
+
 @Autowired
 ArithmeticSimpleOperation arithmeticOperation;
 @Autowired
